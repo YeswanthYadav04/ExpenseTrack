@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Hostel Expense Tracker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--ink:#0f0e17;
+--paper:#fffcf5;
+--gold:#e8a219;
+--gold-light:#f5c842;
+--green:#2d6a4f;
+--red:#c0392b;
+--red-light:#fdecea;
+--muted:#9c958e;
+--border:#e8e2d9;
+--card:#ffffff;
+--surface:#f7f4ee;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:'DM Sans',sans-serif;
+background:var(--paper);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+padding:40px 20px;
+}
+
+/* TOPBAR */
+
+.topbar{
+position:fixed;
+top:0;
+left:0;
+right:0;
+padding:18px 36px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,252,245,0.8);
+backdrop-filter:blur(12px);
+border-bottom:1px solid var(--border);
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+}
+
+.logo-box{
+width:32px;
+height:32px;
+background:var(--ink);
+border-radius:8px;
+display:grid;
+place-items:center;
+font-family:'Syne';
+font-weight:800;
+color:var(--gold);
+}
+
+.logo-name{
+font-family:'Syne';
+font-weight:800;
+color:var(--ink);
+}
+
+.topbar-link{
+font-size:0.85rem;
+color:var(--muted);
+text-decoration:none;
+}
+
+.topbar-link span{
+color:var(--ink);
+border-bottom:1px solid var(--gold);
+}
+
+/* CARD */
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:22px;
+padding:40px 44px;
+width:100%;
+max-width:420px;
+box-shadow:0 12px 48px rgba(0,0,0,0.08);
+}
+
+.card-eyebrow{
+background:var(--ink);
+color:var(--gold);
+padding:4px 12px;
+border-radius:50px;
+font-size:12px;
+display:inline-block;
+margin-bottom:14px;
+}
+
+.card-title{
+font-family:'Syne';
+font-size:28px;
+margin-bottom:6px;
+}
+
+.card-title em{
+color:var(--gold);
+font-style:normal;
+}
+
+.card-sub{
+color:var(--muted);
+font-size:14px;
+margin-bottom:20px;
+}
+
+.divider{
+height:1px;
+background:var(--border);
+margin-bottom:24px;
+}
+
+/* DJANGO FORM */
+
+form p{
+display:flex;
+flex-direction:column;
+margin-bottom:16px;
+}
+
+form label{
+font-size:12px;
+font-weight:600;
+margin-bottom:4px;
+}
+
+form input{
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+background:var(--surface);
+}
+
+form input:focus{
+outline:none;
+border-color:var(--gold);
+}
+
+/* ERROR */
+
+ul.errorlist{
+list-style:none;
+margin-bottom:10px;
+}
+
+ul.errorlist li{
+background:var(--red-light);
+color:var(--red);
+padding:6px 10px;
+border-radius:6px;
+font-size:12px;
+}
+
+/* BUTTON */
+
+.submit-btn{
+width:100%;
+padding:14px;
+background:var(--ink);
+color:var(--gold);
+border:none;
+border-radius:10px;
+font-family:'Syne';
+font-weight:700;
+cursor:pointer;
+margin-top:10px;
+}
+
+.submit-btn:hover{
+opacity:0.9;
+}
+
+/* REGISTER LINK */
+
+.register-link{
+text-align:center;
+margin-top:20px;
+font-size:14px;
+color:var(--muted);
+}
+
+.register-link a{
+color:var(--ink);
+text-decoration:none;
+border-bottom:1px solid var(--gold);
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+<a href="{% url 'home' %}" class="logo">
+<div class="logo-box">₹</div>
+<span class="logo-name">ExpenseTrack</span>
+</a>
+
+<a href="{% url 'register' %}" class="topbar-link">
+No account? <span>Register →</span>
+</a>
+
+</header>
+
+
+<div class="card">
+
+<div class="card-eyebrow">
+Welcome back
+</div>
+
+<h1 class="card-title">
+Sign in to your <em>account</em>
+</h1>
+
+<p class="card-sub">
+Track your hostel expenses where you left off.
+</p>
+
+<div class="divider"></div>
+
+
+<form method="POST" action="{% url 'login' %}">
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button class="submit-btn" type="submit">
+Sign In
+</button>
+
+</form>
+
+
+<p class="register-link">
+Don't have an account?
+<a href="{% url 'register' %}">Create one →</a>
+</p>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Transaction — Hostel Expense Tracker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   ROOT VARIABLES
+========================= */
+
+:root{
+--ink:#0f0e17;
+--paper:#fffcf5;
+--gold:#e8a219;
+--green:#2d6a4f;
+--red:#c0392b;
+--muted:#9c958e;
+--border:#e8e2d9;
+--card:#ffffff;
+--surface:#f7f4ee;
+--sidebar-w:240px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:'DM Sans',sans-serif;
+background:var(--paper);
+display:flex;
+min-height:100vh;
+color:var(--ink);
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+width:var(--sidebar-w);
+background:var(--ink);
+color:white;
+position:fixed;
+height:100%;
+padding:25px 0;
+}
+
+.sidebar-logo{
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 20px 25px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+text-decoration:none;
+}
+
+.logo-box{
+width:32px;
+height:32px;
+background:var(--gold);
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+color:black;
+}
+
+.logo-name{
+font-family:'Syne';
+font-weight:700;
+color:white;
+}
+
+.sidebar-nav{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.nav-item{
+color:rgba(255,255,255,0.6);
+text-decoration:none;
+padding:10px;
+border-radius:8px;
+}
+
+.nav-item:hover{
+background:rgba(255,255,255,0.08);
+color:white;
+}
+
+.nav-item.active{
+background:var(--gold);
+color:black;
+}
+
+.sidebar-footer{
+position:absolute;
+bottom:20px;
+width:100%;
+padding:0 20px;
+}
+
+.user-pill{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+}
+
+.user-avatar{
+width:30px;
+height:30px;
+background:var(--gold);
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+color:black;
+}
+
+.logout-btn{
+width:100%;
+padding:10px;
+border:none;
+background:none;
+color:#ff7b6b;
+cursor:pointer;
+text-align:left;
+}
+
+.logout-btn:hover{
+background:rgba(255,100,80,0.1);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+margin-left:var(--sidebar-w);
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px;
+border-bottom:1px solid var(--border);
+background:white;
+}
+
+.page-title{
+font-family:'Syne';
+font-size:20px;
+font-weight:700;
+}
+
+.back-btn{
+padding:8px 14px;
+border:1px solid var(--border);
+border-radius:8px;
+text-decoration:none;
+color:var(--muted);
+}
+
+.back-btn:hover{
+color:black;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content{
+padding:30px;
+display:flex;
+justify-content:center;
+}
+
+.form-shell{
+width:100%;
+max-width:500px;
+}
+
+/* =========================
+   TYPE TOGGLE
+========================= */
+
+.type-toggle{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px;
+}
+
+.type-label{
+padding:14px;
+border-radius:10px;
+border:1px solid var(--border);
+text-align:center;
+cursor:pointer;
+}
+
+.type-option input{
+display:none;
+}
+
+.type-option input:checked + .type-label{
+background:var(--gold);
+color:black;
+}
+
+/* =========================
+   FORM CARD
+========================= */
+
+.form-card{
+background:white;
+border:1px solid var(--border);
+border-radius:14px;
+padding:25px;
+}
+
+.field{
+display:flex;
+flex-direction:column;
+margin-bottom:16px;
+}
+
+.field label{
+font-size:13px;
+margin-bottom:5px;
+}
+
+.field input{
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+background:var(--surface);
+}
+
+.field input:focus{
+outline:none;
+border-color:var(--gold);
+}
+
+/* BUTTONS */
+
+.submit-btn{
+background:var(--ink);
+color:var(--gold);
+border:none;
+padding:12px;
+border-radius:8px;
+width:100%;
+font-family:'Syne';
+font-weight:700;
+cursor:pointer;
+}
+
+.cancel-btn{
+display:inline-block;
+margin-top:10px;
+text-decoration:none;
+color:var(--muted);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<a href="{% url 'home' %}" class="sidebar-logo">
+<div class="logo-box">₹</div>
+<div class="logo-name">ExpenseTrack</div>
+</a>
+
+<nav class="sidebar-nav">
+
+<a href="{% url 'dashboard' %}" class="nav-item">
+Dashboard
+</a>
+
+<a href="{% url 'add_expense' %}" class="nav-item active">
+Add Transaction
+</a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<div class="user-pill">
+<div class="user-avatar">{{user.username|slice:":1"|upper}}</div>
+<div>{{user.username}}</div>
+</div>
+
+<form method="POST" action="/accounts/logout/">
+{% csrf_token %}
+<button class="logout-btn">Sign Out</button>
+</form>
+
+</div>
+
+</aside>
+
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<div class="page-title">
+Add Transaction
+</div>
+
+<a href="{% url 'dashboard' %}" class="back-btn">
+Back to Dashboard
+</a>
+
+</div>
+
+
+<div class="content">
+
+<div class="form-shell">
+
+
+<!-- TYPE TOGGLE -->
+
+<div class="type-toggle">
+
+<div class="type-option">
+
+<input type="radio" name="type_toggle" id="toggle_expense" value="expense" checked>
+
+<label for="toggle_expense" class="type-label">
+Expense
+</label>
+
+</div>
+
+<div class="type-option">
+
+<input type="radio" name="type_toggle" id="toggle_income" value="income">
+
+<label for="toggle_income" class="type-label">
+Money Added
+</label>
+
+</div>
+
+</div>
+
+
+
+<!-- FORM -->
+
+<div class="form-card">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="field">
+<label>Title</label>
+<input type="text" name="title" placeholder="Dinner, Rent, Bus fare">
+</div>
+
+<div class="field">
+<label>Amount</label>
+<input type="number" name="amount" step="0.01">
+</div>
+
+<div class="field">
+<label>Category</label>
+<input type="text" name="category">
+</div>
+
+<select name="type" id="id_type" style="display:none">
+
+<option value="expense">Expense</option>
+<option value="income">Income</option>
+
+</select>
+
+<button type="submit" class="submit-btn">
+Save Transaction
+</button>
+
+<a href="{% url 'dashboard' %}" class="cancel-btn">
+Cancel
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const toggleInputs=document.querySelectorAll('input[name="type_toggle"]')
+const hiddenType=document.getElementById('id_type')
+
+toggleInputs.forEach(input=>{
+input.addEventListener('change',()=>{
+hiddenType.value=input.value
+})
+})
+
+</script>
+
+</body>
+</html>

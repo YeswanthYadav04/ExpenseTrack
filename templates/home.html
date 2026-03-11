@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostel Expense Tracker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+--ink:#0f0e17;
+--paper:#fffcf5;
+--gold:#e8a219;
+--gold-light:#f5c842;
+--muted:#a8a29e;
+--card-bg:#ffffff;
+--border:#e8e2d9;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:'DM Sans',sans-serif;
+background:var(--paper);
+color:var(--ink);
+min-height:100vh;
+display:grid;
+grid-template-rows:auto 1fr auto;
+}
+
+/* TOP BAR */
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 40px;
+border-bottom:1px solid var(--border);
+background:rgba(255,252,245,0.9);
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+font-family:'Syne',sans-serif;
+font-weight:800;
+font-size:1.2rem;
+text-decoration:none;
+color:var(--ink);
+}
+
+.logo-icon{
+width:36px;
+height:36px;
+background:var(--ink);
+border-radius:8px;
+display:grid;
+place-items:center;
+color:var(--gold);
+font-weight:700;
+}
+
+/* HERO */
+
+.hero{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+padding:60px 20px;
+text-align:center;
+}
+
+.badge{
+background:var(--ink);
+color:var(--gold);
+padding:6px 14px;
+border-radius:50px;
+font-size:0.75rem;
+font-family:'Syne';
+letter-spacing:0.1em;
+margin-bottom:25px;
+}
+
+h1{
+font-family:'Syne';
+font-size:clamp(2.5rem,6vw,4rem);
+line-height:1.1;
+margin-bottom:20px;
+}
+
+h1 em{
+color:var(--gold);
+font-style:normal;
+}
+
+.subtitle{
+max-width:500px;
+margin-bottom:40px;
+font-size:1rem;
+color:#6b6560;
+line-height:1.6;
+}
+
+/* AUTH CARD */
+
+.auth-card{
+background:white;
+padding:35px 40px;
+border-radius:18px;
+border:1px solid var(--border);
+width:100%;
+max-width:380px;
+box-shadow:0 8px 40px rgba(0,0,0,0.08);
+}
+
+.welcome-header{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:20px;
+}
+
+.avatar{
+width:48px;
+height:48px;
+border-radius:12px;
+background:var(--ink);
+color:var(--gold);
+display:grid;
+place-items:center;
+font-family:'Syne';
+font-weight:700;
+}
+
+.welcome-text small{
+color:var(--muted);
+font-size:0.75rem;
+}
+
+.welcome-text strong{
+font-family:'Syne';
+font-size:1.1rem;
+}
+
+.divider{
+height:1px;
+background:var(--border);
+margin:20px 0;
+}
+
+/* BUTTONS */
+
+.btn{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:8px;
+width:100%;
+padding:14px;
+border-radius:12px;
+text-decoration:none;
+font-size:0.95rem;
+cursor:pointer;
+border:none;
+transition:0.2s;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.btn-primary{
+background:var(--ink);
+color:var(--gold);
+}
+
+.btn-secondary{
+border:1px solid var(--border);
+background:white;
+color:var(--ink);
+}
+
+.btn-danger{
+border:1px solid #f0c8c5;
+background:white;
+color:#c0392b;
+margin-top:12px;
+}
+
+.separator{
+display:flex;
+align-items:center;
+gap:10px;
+margin:18px 0;
+font-size:0.8rem;
+color:var(--muted);
+}
+
+.separator::before,
+.separator::after{
+content:"";
+flex:1;
+height:1px;
+background:var(--border);
+}
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:18px;
+font-size:0.8rem;
+color:var(--muted);
+border-top:1px solid var(--border);
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+.topbar{
+padding:16px 20px;
+}
+
+.auth-card{
+padding:28px;
+}
+
+h1{
+font-size:2.2rem;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+<a href="/" class="logo">
+<div class="logo-icon">₹</div>
+ExpenseTrack
+</a>
+</header>
+
+<main class="hero">
+
+<span class="badge">Hostel Finance Simplified</span>
+
+<h1>Track every rupee,<br><em>stress less</em> about money</h1>
+
+<p class="subtitle">
+A simple expense tracker built for hostel students to manage daily spending and stay on budget.
+</p>
+
+<div class="auth-card">
+
+{% if user.is_authenticated %}
+
+<div class="welcome-header">
+
+<div class="avatar">
+{{ user.username|slice:":1"|upper }}
+</div>
+
+<div class="welcome-text">
+<small>Signed in as</small>
+<strong>{{ user.username }}</strong>
+</div>
+
+</div>
+
+<div class="divider"></div>
+
+<a class="btn btn-primary" href="{% url 'dashboard' %}">
+Go to Dashboard
+</a>
+
+<form method="POST" action="/accounts/logout/">
+{% csrf_token %}
+<button type="submit" class="btn btn-danger">
+Sign Out
+</button>
+</form>
+
+{% else %}
+
+<a class="btn btn-primary" href="/accounts/login/">
+Sign In
+</a>
+
+<div class="separator">or</div>
+
+<a class="btn btn-secondary" href="{% url 'register' %}">
+Create an Account
+</a>
+
+{% endif %}
+
+</div>
+
+</main>
+
+<footer>
+© 2026 Hostel Expense Tracker · Built for hostel students
+</footer>
+
+</body>
+</html>

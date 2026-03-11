@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard — Hostel Expense Tracker</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+/* KEEPING YOUR DESIGN VARIABLES */
+
+:root{
+--ink:#0f0e17;
+--paper:#fffcf5;
+--gold:#e8a219;
+--green:#2d6a4f;
+--red:#c0392b;
+--muted:#9c958e;
+--border:#e8e2d9;
+--card:#ffffff;
+--sidebar-w:240px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:'DM Sans',sans-serif;
+background:var(--paper);
+display:flex;
+min-height:100vh;
+color:var(--ink);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:var(--sidebar-w);
+background:var(--ink);
+color:white;
+padding:25px 0;
+position:fixed;
+height:100%;
+}
+
+.sidebar-logo{
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 20px 25px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+text-decoration:none;
+}
+
+.logo-box{
+width:32px;
+height:32px;
+background:var(--gold);
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+color:black;
+}
+
+.logo-name{
+font-family:'Syne';
+font-weight:700;
+color:white;
+}
+
+.sidebar-nav{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.nav-item{
+color:rgba(255,255,255,0.6);
+text-decoration:none;
+padding:10px;
+border-radius:8px;
+}
+
+.nav-item:hover{
+background:rgba(255,255,255,0.08);
+color:white;
+}
+
+.nav-item.active{
+background:var(--gold);
+color:black;
+}
+
+.sidebar-footer{
+position:absolute;
+bottom:20px;
+width:100%;
+padding:0 20px;
+}
+
+.user-pill{
+display:flex;
+align-items:center;
+gap:10px;
+margin-bottom:10px;
+}
+
+.user-avatar{
+width:30px;
+height:30px;
+background:var(--gold);
+color:black;
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+.logout-btn{
+display:block;
+width:100%;
+padding:10px;
+border:none;
+background:none;
+color:#ff6b5e;
+cursor:pointer;
+text-align:left;
+}
+
+.logout-btn:hover{
+background:rgba(255,100,80,0.1);
+}
+
+/* MAIN */
+
+.main{
+margin-left:var(--sidebar-w);
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+/* TOPBAR */
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px;
+border-bottom:1px solid var(--border);
+background:white;
+}
+
+.page-title{
+font-family:'Syne';
+font-size:20px;
+font-weight:700;
+}
+
+.add-btn{
+background:var(--ink);
+color:var(--gold);
+padding:10px 16px;
+border-radius:8px;
+text-decoration:none;
+}
+
+/* CONTENT */
+
+.content{
+padding:30px;
+display:flex;
+flex-direction:column;
+gap:25px;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+}
+
+.stat-card{
+background:white;
+padding:18px;
+border-radius:12px;
+border:1px solid var(--border);
+}
+
+.stat-title{
+font-size:12px;
+color:var(--muted);
+}
+
+.stat-value{
+font-family:'Syne';
+font-size:22px;
+font-weight:700;
+margin-top:5px;
+}
+
+/* DEPOSITS */
+
+.deposit-block{
+border:1px solid var(--border);
+border-radius:12px;
+overflow:hidden;
+background:white;
+}
+
+.deposit-head{
+display:flex;
+justify-content:space-between;
+padding:12px 18px;
+background:#e8f6ef;
+font-weight:600;
+}
+
+.deposit-head.pre{
+background:#fdecea;
+}
+
+.expense-row{
+display:flex;
+justify-content:space-between;
+padding:12px 18px;
+border-top:1px solid var(--border);
+}
+
+.expense-amt{
+color:var(--red);
+font-weight:700;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th{
+text-align:left;
+padding:12px;
+font-size:12px;
+color:var(--muted);
+border-bottom:1px solid var(--border);
+}
+
+td{
+padding:12px;
+border-bottom:1px solid var(--border);
+}
+
+.amount-pos{color:var(--green);font-weight:700;}
+.amount-neg{color:var(--red);font-weight:700;}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<a href="{% url 'home' %}" class="sidebar-logo">
+<div class="logo-box">₹</div>
+<div class="logo-name">ExpenseTrack</div>
+</a>
+
+<nav class="sidebar-nav">
+
+<a href="{% url 'dashboard' %}" class="nav-item active">
+Dashboard
+</a>
+
+<a href="{% url 'add_expense' %}" class="nav-item">
+Add Transaction
+</a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<div class="user-pill">
+<div class="user-avatar">{{user.username|slice:":1"|upper}}</div>
+<div>{{user.username}}</div>
+</div>
+
+<form method="POST" action="/accounts/logout/">
+{% csrf_token %}
+<button class="logout-btn">Sign Out</button>
+</form>
+
+</div>
+
+</aside>
+
+
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<div class="page-title">
+Dashboard
+</div>
+
+<a href="{% url 'add_expense' %}" class="add-btn">
+Add Transaction
+</a>
+
+</div>
+
+
+<div class="content">
+
+<!-- STAT CARDS -->
+
+<div class="stats">
+
+<div class="stat-card">
+<div class="stat-title">Current Balance</div>
+<div class="stat-value">₹{{balance}}</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-title">Total Income</div>
+<div class="stat-value" style="color:green">₹{{total_income}}</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-title">Total Spent</div>
+<div class="stat-value" style="color:red">₹{{total_expense}}</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-title">Transactions</div>
+<div class="stat-value">{{transactions|length}}</div>
+</div>
+
+</div>
+
+
+<!-- DEPOSIT GROUPS -->
+
+{% for section in sections %}
+
+<div class="deposit-block">
+
+{% if section.deposit %}
+
+<div class="deposit-head">
+<div>Money Received</div>
+<div>+ ₹{{section.deposit.amount}}</div>
+</div>
+
+{% else %}
+
+<div class="deposit-head pre">
+Expenses before first deposit
+</div>
+
+{% endif %}
+
+{% for e in section.expenses %}
+
+<div class="expense-row">
+
+<div>
+{{e.title}}
+</div>
+
+<div class="expense-amt">
+− ₹{{e.amount}}
+</div>
+
+<div>
+
+<a href="{% url 'edit_expense' e.id %}">✏️</a>
+
+<a href="{% url 'delete_expense' e.id %}">🗑</a>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<div style="padding:15px;color:gray;">
+No expenses
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endfor %}
+
+
+<!-- TRANSACTION TABLE -->
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Title</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Balance</th>
+<th>Actions</th>
+</tr>
+
+{% for t in transactions %}
+
+<tr>
+
+<td>{{t.date}}</td>
+
+<td>{{t.title}}</td>
+
+<td>{{t.type}}</td>
+
+<td>
+
+{% if t.type == "income" %}
+<span class="amount-pos">+ ₹{{t.amount}}</span>
+{% else %}
+<span class="amount-neg">− ₹{{t.amount}}</span>
+{% endif %}
+
+</td>
+
+<td>₹{{t.running_balance}}</td>
+
+<td>
+
+<a href="{% url 'edit_expense' t.id %}">✏️</a>
+
+<a href="{% url 'delete_expense' t.id %}">🗑</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+const categoryData={{category_data|safe}}
+
+new Chart(
+document.getElementById("categoryChart"),
+{
+type:'pie',
+data:{
+labels:Object.keys(categoryData),
+datasets:[{
+data:Object.values(categoryData)
+}]
+}
+}
+)
+
+</script>
+
+</body>
+</html>
